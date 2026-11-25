@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10152d" />
+  <meta name="description" content="RecallRocket — a smarter way to learn with active recall and spaced repetition." />
+  <title>RecallRocket | Master Any Subject</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#home" aria-label="RecallRocket home">
+        <span class="brand-mark">✦</span><span>Recall<span class="brand-accent">Rocket</span></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-view="home"><span>⌂</span> Overview</button>
+        <button class="nav-link" data-view="library"><span>▤</span> My flashcards</button>
+        <button class="nav-link" data-view="study"><span>◎</span> Study session</button>
+        <button class="nav-link" data-view="progress"><span>▥</span> Progress</button>
+      </nav>
+      <div class="sidebar-label deck-label">YOUR SUBJECTS <button id="addSubjectSide" class="tiny-add" title="Add subject">+</button></div>
+      <div id="subjectNav" class="subject-nav"></div>
+      <div class="sidebar-bottom">
+        <div class="streak-card"><div class="streak-icon">🔥</div><div><strong id="sideStreak">0 day streak</strong><small>Small steps, big progress.</small></div></div>
+        <button class="nav-link" id="themeToggle"><span>◐</span> Toggle appearance</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="crumb">Overview</strong></div>
+        <div class="top-actions"><span class="today-pill" id="todayLabel"></span><div class="avatar">S</div></div>
+      </header>
+
+      <section class="view active" id="homeView">
+        <div class="welcome-row"><div><p class="eyebrow">YOUR PERSONAL LEARNING SPACE</p><h1>Make every study minute <span>count.</span></h1><p class="muted intro">Build knowledge that sticks. One question at a time.</p></div><div class="rocket-art" aria-hidden="true">🚀<span>✦</span></div></div>
+        <div class="hero-card"><div class="hero-copy"><span class="hero-tag">✦ YOUR NEXT MISSION</span><h2>Ready for a little<br>brain workout?</h2><p>Pick up where you left off or start a fresh study session.</p><button class="btn btn-light" data-go="study">Start studying <span>→</span></button></div><div class="hero-orbit"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="planet">✦</div><div class="orbit-dot"></div></div></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total flashcards</span><span class="stat-icon violet">▤</span></div><strong id="totalCards">0</strong><small>Across all your subjects</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Cards mastered</span><span class="stat-icon green">✓</span></div><strong id="knownCards">0</strong><small>Keep that knowledge strong</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Study streak</span><span class="stat-icon orange">🔥</span></div><strong id="streakCount">0 days</strong><small>Consistency is your superpower</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Mastery rate</span><span class="stat-icon blue">◉</span></div><strong id="masteryRate">0%</strong><small>Cards marked as known</small></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">KEEP THE MOMENTUM</p><h2>Your subjects</h2></div><button class="btn btn-outline" id="addSubjectBtn">＋ Add subject</button></div>
+        <div class="subject-grid" id="subjectGrid"></div>
+        <div class="section-heading recent-heading"><div><p class="eyebrow">QUICK ACCESS</p><h2>Recently added cards</h2></div><button class="text-btn" data-go="library">View all cards →</button></div>
+        <div class="recent-list" id="recentList"></div>
+      </section>
+
+      <section class="view" id="libraryView">
+        <div class="page-heading"><div><p class="eyebrow">YOUR KNOWLEDGE, ORGANIZED</p><h1>Flashcard library</h1><p class="muted">Create, organize, and grow your own learning collection.</p></div><button class="btn btn-primary" id="createCardBtn">＋ Create flashcard</button></div>
+        <div class="toolbar"><label class="search-box">⌕ <input id="searchInput" type="search" placeholder="Search questions, answers or subjects..."></label><select id="subjectFilter" aria-label="Filter by subject"><option value="all">All subjects</option></select><select id="statusFilter" aria-label="Filter by status"><option value="all">All cards</option><option value="known">Known</option><option value="review">Need revision</option><option value="new">Not studied</option></select></div>
+        <div class="library-summary" id="librarySummary"></div><div class="card-grid" id="cardGrid"></div>
+      </section>
+
+      <section class="view" id="studyView">
+        <div class="page-heading"><div><p class="eyebrow">FOCUS MODE</p><h1>Study session</h1><p class="muted">Think first. Flip second. Remember longer.</p></div><button class="btn btn-outline" id="shuffleBtn">⤨ Shuffle deck</button></div>
+        <div class="study-layout"><div class="study-main"><div class="study-controls"><select id="studySubject" aria-label="Choose subject"><option value="all">All subjects</option></select><span id="studyPosition">Card 1 of 1</span></div><div class="study-progress"><span id="studyProgressBar"></span></div>
+          <div class="flip-card" id="flipCard" tabindex="0" role="button" aria-label="Flashcard. Press Enter or Space to flip."><div class="flip-inner"><div class="card-face card-front"><span class="card-kicker">QUESTION <span>↗</span></span><span class="study-subject" id="frontSubject">COMPUTER SCIENCE</span><h2 id="questionText">What is an operating system?</h2><p class="flip-hint">Click to reveal answer <span>↻</span></p></div><div class="card-face card-back"><span class="card-kicker">THE ANSWER</span><p id="answerText">An operating system is system software that manages hardware and software resources.</p><p class="flip-hint">Click to see question <span>↻</span></p></div></div></div>
+          <div class="study-actions"><button class="btn btn-outline" id="prevCard">← Previous</button><button class="btn btn-soft" id="markReview">↻ Need revision</button><button class="btn btn-success" id="markKnown">✓ I knew it</button><button class="btn btn-outline" id="nextCard">Next →</button></div><p class="study-note">Tip: Say the answer out loud before flipping the card. That's active recall!</p>
+        </div><aside class="study-aside"><div class="aside-panel"><div class="aside-icon">🧠</div><h3>Train your memory</h3><p>Retrieving an answer from memory strengthens learning more than simply rereading it.</p><div class="mini-stat"><span>Known in this session</span><strong id="sessionKnown">0</strong></div><div class="mini-stat"><span>Need revision</span><strong id="sessionReview">0</strong></div></div><div class="aside-panel quote-panel"><span>✦ A LITTLE REMINDER</span><p>“Great things are done by a series of small things brought together.”</p><small>— Vincent van Gogh</small></div></aside></div>
+      </section>
+
+      <section class="view" id="progressView">
+        <div class="page-heading"><div><p class="eyebrow">YOUR LEARNING JOURNEY</p><h1>Progress & insights</h1><p class="muted">Celebrate what you know and find what to practice next.</p></div></div>
+        <div class="progress-overview"><div class="progress-score"><span>OVERALL MASTERY</span><strong id="progressPercent">0%</strong><div class="big-progress"><span id="bigProgressBar"></span></div><small id="progressCaption">Add flashcards to begin your journey.</small></div><div class="progress-numbers"><div><span class="dot green-dot"></span><strong id="progressKnown">0</strong><small>Known</small></div><div><span class="dot orange-dot"></span><strong id="progressReview">0</strong><small>Need revision</small></div><div><span class="dot grey-dot"></span><strong id="progressNew">0</strong><small>Not studied</small></div></div></div>
+        <div class="section-heading"><div><p class="eyebrow">SUBJECT BREAKDOWN</p><h2>Mastery by subject</h2></div></div><div class="subject-progress-list" id="subjectProgressList"></div>
+        <div class="tip-banner"><span>💡</span><div><strong>Your next best move</strong><p id="nextTip">Create your first flashcard and start building a learning habit.</p></div></div>
+      </section>
+
+      <footer class="footer"><span>✦ RecallRocket</span><span>Learn smart. Recall strong.</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="cardModal" aria-hidden="true"><div class="modal"><div class="modal-header"><div><p class="eyebrow">GROW YOUR KNOWLEDGE</p><h2 id="modalTitle">Create a flashcard</h2></div><button class="close-modal" data-close="cardModal" aria-label="Close">×</button></div><form id="cardForm"><input type="hidden" id="editCardId"><label>Subject<select id="formSubject" required></select></label><label>Question<textarea id="formQuestion" rows="3" placeholder="e.g. What is photosynthesis?" required></textarea></label><label>Answer<textarea id="formAnswer" rows="4" placeholder="Write a clear, helpful answer..." required></textarea></label><div class="form-actions"><button type="button" class="btn btn-outline" data-close="cardModal">Cancel</button><button class="btn btn-primary" type="submit">Save flashcard</button></div></form></div></div>
+  <div class="modal-backdrop" id="subjectModal" aria-hidden="true"><div class="modal modal-small"><div class="modal-header"><div><p class="eyebrow">ORGANIZE YOUR STUDY</p><h2>Add a subject</h2></div><button class="close-modal" data-close="subjectModal" aria-label="Close">×</button></div><form id="subjectForm"><label>Subject name<input id="subjectName" maxlength="28" placeholder="e.g. Biology" required></label><label>Choose an icon<select id="subjectIcon"><option>📘</option><option>💻</option><option>🧮</option><option>⚛️</option><option>🧪</option><option>🌿</option><option>🌍</option><option>📝</option><option>🎨</option></select></label><div class="form-actions"><button type="button" class="btn btn-outline" data-close="subjectModal">Cancel</button><button class="btn btn-primary" type="submit">Add subject</button></div></form></div></div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
